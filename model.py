@@ -64,6 +64,8 @@ def load_trainer_for_train(args, model, hate_train_dataset, hate_valid_dataset):
         load_best_model_at_end=True,
         report_to="wandb",  # W&B 로깅 활성화
         run_name=args.run_name,  # run_name 지정
+        bf16=True, #float point 32 -> 16
+        gradient_accumulation_steps=10 # 10번에 한번씩 loss update
     )
 
     ## Add callback & optimizer & scheduler
@@ -108,8 +110,7 @@ def train(args):
     pl.seed_everything(seed=42, workers=False)
 
     # set device
-    # device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
     print("device:", device)
 
     # set model and tokenizer
@@ -119,15 +120,25 @@ def train(args):
     # set data
     hate_train_dataset, hate_valid_dataset, hate_test_dataset, test_dataset = (
         prepare_dataset(args.dataset_dir, tokenizer, args.max_len)
-    )
+    )    
+    from sklearn.model_selection import KFold
 
-    # set trainer
-    trainer = load_trainer_for_train(
-        args, model, hate_train_dataset, hate_valid_dataset
-    )
+    # Initialize the k-fold cross validation
+    kf = KFold(n_splits=5, shuffle=True)
 
-    # train model
-    print("--- Start train ---")
-    trainer.train()
-    print("--- Finish train ---")
-    model.save_pretrained(args.model_dir)
+    # Loop through each fold
+    for fold, (train_idx, test_idx) in enumerate(kf.split(hate_train_dataset)):
+        print(f"Fold {fold + 1}")
+        print("-------")
+        print("train_idx", len(train_idx), train_idx)
+        print("test_idx",len(test_idx),test_idx)
+        # set trainer
+        trainer = load_trainer_for_train(
+            args, model, hate_train_dataset, hate_valid_dataset
+        )
+
+        # train model
+        print("--- Start train ---")
+        trainer.train()
+        print("--- Finish train ---")
+        model.save_pretrained(args.model_dir)
