@@ -8,9 +8,9 @@ GPU ?=
 
 help:
 	@echo "사용법:"
-	@echo "  make cuda GPU=<l4|t4|v100>   # CUDA/드라이버 설치"
+	@echo "  make cuda GPU=<l4|t4|v100>   # CUDA/드라이버 설치 (CUDA 12.2, 550-server 계열+유틸)"
 	@echo "  make l4 | make t4 | make v100 # 개별 GPU용 설치 바로 실행"
-	@echo "  make full-install GPU=<l4|t4|v100>  # 전체 설치 플로우 실행"
+	@echo "  make full-install GPU=<l4|t4|v100>  # 전체 설치 플로우 실행 (Ubuntu 22.04 권장)"
 	@echo "  make deps    # pyenv 종속 패키지 설치"
 	@echo "  make pyenv   # pyenv 설치/설정"
 	@echo "  make venv    # python 가상환경 생성/활성"

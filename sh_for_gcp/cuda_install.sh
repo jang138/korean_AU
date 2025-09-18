@@ -2,10 +2,11 @@
 
 # GPU 타입별 CUDA 및 NVIDIA 드라이버 설치 스크립트
 # 사용법: ./cuda_install.sh <l4|t4|v100>
+# 드라이버 정책: 550-server 계열 통일, 유틸 패키지 포함 설치
 
 GPU_TYPE=${1:-""}
 
-echo "=== GPU 타입별 CUDA 설치 스크립트 ==="
+echo "=== GPU 타입별 CUDA 설치 스크립트 (550-server 계열) ==="
 echo "사용법: $0 <l4|t4|v100>"
 
 if [ -z "$GPU_TYPE" ]; then

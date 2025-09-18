@@ -174,6 +174,8 @@ python --version
 ### 3.1 CUDA 및 NVIDIA 드라이버 설치 (`cuda_install.sh`)
 
 - **기능**: CUDA 12.2 및 NVIDIA 드라이버를 설치합니다.
+- **드라이버 정책**: NVIDIA 550-server 계열로 통일하며, 관련 유틸 패키지를 함께 설치합니다.
+  - 설치 패키지: `nvidia-driver-550-server`, `nvidia-utils-550-server`, `nvidia-compute-utils-550-server`, `libnvidia-compute-550-server`, `libnvidia-decode-550-server`, `libnvidia-encode-550-server`, `libnvidia-fbc1-550-server`
 - **GPU 타입 인자 필수**: 자동 감지를 제거했습니다. 아래 중 하나를 인자로 전달해야 합니다: `l4`, `t4`, `v100`.
 - **사용법**:
     ```bash
@@ -187,6 +189,7 @@ python --version
     bash sh_for_gcp/cuda_install.sh v100
     ```
 - **주의사항**: 설치 후 시스템 재부팅이 필요할 수 있습니다. 재부팅 후 `nvidia-smi`로 확인하세요.
+  - 스크립트에서 설치 완료 후 `sudo reboot`를 수행합니다. 재부팅 후 `nvidia-smi`와 `nvcc --version`으로 확인하십시오.
 
 ### 3.2 Pyenv 종속성 설치 (`dependencies_install.sh`)
 
@@ -228,7 +231,7 @@ python --version
     cd sh_for_gcp
     make help
     ```
-- **CUDA/드라이버 설치**
+- **CUDA/드라이버 설치** (CUDA 12.2, 550-server 계열+유틸 포함)
     ```bash
     # GPU 타입 지정 필수: l4 | t4 | v100
     make cuda GPU=l4
@@ -239,7 +242,7 @@ python --version
     ```
 - **전체 설치 플로우 실행**
     ```bash
-    # GPU 타입 지정 필수
+    # GPU 타입 지정 필수 (Ubuntu 22.04 권장)
     make full-install GPU=l4
     ```
 - **환경 준비**
