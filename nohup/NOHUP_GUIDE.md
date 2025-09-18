@@ -93,3 +93,45 @@ mkdir -p logs
 nohup python -u src/main.py --run_name "ssac-bert" --lr 5e-4 > logs/run_bert_lr5e-4.out 2>&1 & echo $! > run_bert_lr5e-4.pid
 ```
 
+## 스크립트로 한 번에 실행하기(run_experiments.sh)
+- 위치: `korean_AU/nohup/run_experiments.sh`
+- 기능: 여러 실험을 한 번에 nohup으로 실행/상태확인/중지/로그보기 지원
+- 로그 디렉터리: `korean_AU/logs/`
+- PID 디렉터리: `korean_AU/nohup/pids/`
+
+### CONFIG 섹션에서 실험 편집하기
+스크립트 상단에 다음과 같은 CONFIG가 있습니다. 여기서 실험을 간단히 수정/추가하세요.
+```
+PYTHON_BIN="python -u"
+MAIN_PY="<프로젝트_루트>/src/main.py"
+EXPERIMENTS=(
+  "run_bert_lr5e-4|--run_name ssac-bert --lr 5e-4"
+  "run_bert_lr5e-3|--run_name ssac-bert --lr 5e-3"
+  "run_roberta|--model_name klue/roberta-large --run_name ssac-roberta --lr 3e-5"
+)
+```
+- 형식: "로컬이름|main.py 옵션들"
+- 로컬이름(local_name)은 자동으로 로그/ PID 파일명으로 사용됩니다.
+  - 로그: `logs/<local_name>.out`
+  - PID: `nohup/pids/<local_name>.pid`
+
+예) 러닝레이트와 이름을 바꾸려면:
+```
+"exp_new|--run_name exp_new --lr 2e-5"
+```
+
+### 사용법
+```
+# 시작(설정된 모든 실험 실행)
+bash nohup/run_experiments.sh start
+
+# 상태 확인
+bash nohup/run_experiments.sh status
+
+# 종료(설정된 모든 실험 종료)
+bash nohup/run_experiments.sh stop
+
+# 로그 보기
+bash nohup/run_experiments.sh tail run_bert_lr5e-4
+```
+
