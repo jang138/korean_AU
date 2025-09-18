@@ -20,13 +20,13 @@ class hate_dataset(torch.utils.data.Dataset):
         return len(self.labels)
 
 
-def load_data(dataset_dir):
-    """csv file을 dataframe으로 load"""
-    dataset = pd.read_csv(dataset_dir)
-    print("dataframe 의 형태")
-    print("-" * 100)
-    print(dataset.head())
-    return dataset
+# def load_data(dataset_dir):
+#     """csv file을 dataframe으로 load"""
+#     dataset = pd.read_csv(dataset_dir)
+#     print("dataframe 의 형태")
+#     print("-" * 100)
+#     print(dataset.head())
+#     return dataset
 
 def load_data(dataset_name, split):
     """HuggingFace에서 데이터셋 로드 → pandas DataFrame 반환"""
