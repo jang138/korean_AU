@@ -1,6 +1,6 @@
 import pytorch_lightning as pl
 import torch
-from src.utils import compute_metrics
+from utils import compute_metrics
 from data import prepare_dataset
 
 from transformers import (
@@ -56,7 +56,7 @@ def load_trainer_for_train(args, model, hate_train_dataset, hate_valid_dataset):
         weight_decay=args.weight_decay,  # strength of weight decay
         logging_dir=args.save_path + "logs",  # directory for storing logs
         logging_steps=args.logging_step,  # log saving step.
-        evaluation_strategy="steps",  # evaluation strategy to adopt during training
+        eval_strategy="steps",  # eval strategy to adopt during training
         # `no`: No evaluation during training.
         # `steps`: Evaluate every `eval_steps`.
         # `epoch`: Evaluate every end of epoch.
