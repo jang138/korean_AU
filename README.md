@@ -19,6 +19,7 @@
     - 3.4 [Python 및 가상 환경 설정 (python_virtualenv.sh)](#34-python-및-가상-환경-설정-python_virtualenvsh)
     - 3.5 [Git 리포지토리 클론 (clone_git_repo.sh)](#35-git-리포지토리-클론-clone_git_reposh)
     - 3.6 [전체 스크립트 실행 (full_install.sh)](#36-전체-스크립트-실행-full_installsh)
+    - 3.7 [Makefile로 간편 실행](#37-makefile로-간편-실행)
 
 ---
 
@@ -117,10 +118,70 @@ Korean_AU/
 
 이 섹션에서는 GCP VM 환경에서 CUDA 설치 및 pyenv 설정 등 필요한 환경을 자동으로 구성하기 위한 쉘 스크립트를 설명합니다.
 
+### 빠른 시작: Step-by-Step 가이드
+
+아래 단계는 저장소를 클론하는 것부터 GPU 타입을 선택하여 CUDA/드라이버를 설치하고, 재부팅 후 전체 설치를 진행하는 흐름입니다.
+
+1) 저장소 클론 및 디렉터리 이동
+```bash
+git clone https://github.com/jonhyuk0922/korean_AU.git
+cd korean_AU/sh_for_gcp
+```
+
+2) (선택) Ubuntu 버전 확인 — 22.04(Jammy) 권장
+```bash
+make check-ubuntu
+```
+
+3) CUDA 및 NVIDIA 드라이버 설치 — GPU 타입 지정 필수
+```bash
+# GPU 타입은 l4 | t4 | v100 중 하나를 선택하세요.
+make cuda GPU=l4
+# 또는 직접 스크립트 실행
+bash cuda_install.sh l4
+```
+
+4) 재부팅 후 재로그인하여 확인
+```bash
+nvidia-smi
+/usr/local/cuda-12.2/bin/nvcc --version
+```
+
+5) 전체 설치 플로우 실행 (pyenv, venv, 의존성 설치 등)
+```bash
+# 저장소 루트에서 실행했다면 sh_for_gcp로 이동
+cd korean_AU/sh_for_gcp
+
+# Makefile로 실행
+make full-install GPU=l4
+
+# 또는 스크립트로 직접 실행 (리포지토리 URL 필요 시)
+GIT_REPO_URL="https://github.com/your/repository.git" bash full_install.sh l4
+```
+
+6) 가상환경 활성화 후 프로젝트 사용
+```bash
+# 예시: pyenv로 생성된 가상환경 이름이 my_env인 경우
+pyenv activate my_env
+python --version
+```
+
 ### 3.1 CUDA 및 NVIDIA 드라이버 설치 (`cuda_install.sh`)
 
-- **기능**: CUDA와 NVIDIA 드라이버를 설치한 뒤, 시스템을 재부팅합니다.
-- **주의사항**: 재부팅 후에 나머지 스크립트를 실행해야 합니다.
+- **기능**: CUDA 12.2 및 NVIDIA 드라이버를 설치합니다.
+- **GPU 타입 인자 필수**: 자동 감지를 제거했습니다. 아래 중 하나를 인자로 전달해야 합니다: `l4`, `t4`, `v100`.
+- **사용법**:
+    ```bash
+    # 예시: L4 GPU 환경
+    bash sh_for_gcp/cuda_install.sh l4
+
+    # 예시: T4 GPU 환경
+    bash sh_for_gcp/cuda_install.sh t4
+
+    # 예시: V100 GPU 환경
+    bash sh_for_gcp/cuda_install.sh v100
+    ```
+- **주의사항**: 설치 후 시스템 재부팅이 필요할 수 있습니다. 재부팅 후 `nvidia-smi`로 확인하세요.
 
 ### 3.2 Pyenv 종속성 설치 (`dependencies_install.sh`)
 
@@ -145,9 +206,43 @@ Korean_AU/
 ### 3.6 전체 스크립트 실행 (`full_install.sh`)
 
 - **기능**: 위의 모든 쉘 스크립트를 순차적으로 실행하여 전체 환경을 설정합니다.
-- **사용법**: Git 리포지토리 URL을 환경 변수로 전달하여 실행합니다.
+- **Ubuntu 22.04 안내**: 스크립트는 Ubuntu 22.04 (Jammy) 기준으로 검증되었습니다. 다른 버전에서는 실패할 수 있습니다.
+- **사용법**: GPU 타입 인자와 Git 리포지토리 URL을 함께 전달해 실행합니다.
     ```bash
-    GIT_REPO_URL="https://github.com/your/repository.git" bash full_install.sh
+    # L4 GPU 기준 전체 설치 예시
+    cd sh_for_gcp
+    GIT_REPO_URL="https://github.com/your/repository.git" bash full_install.sh l4
+    ```
+
+### 3.7 Makefile로 간편 실행
+
+`sh_for_gcp/Makefile`을 통해 주요 스크립트를 간편하게 실행할 수 있습니다.
+
+- **도움말**
+    ```bash
+    cd sh_for_gcp
+    make help
+    ```
+- **CUDA/드라이버 설치**
+    ```bash
+    # GPU 타입 지정 필수: l4 | t4 | v100
+    make cuda GPU=l4
+    # 또는 단축 타깃
+    make l4
+    make t4
+    make v100
+    ```
+- **전체 설치 플로우 실행**
+    ```bash
+    # GPU 타입 지정 필수
+    make full-install GPU=l4
+    ```
+- **환경 준비**
+    ```bash
+    make check-ubuntu   # Ubuntu 22.04 권장 여부 확인
+    make deps           # pyenv 종속 패키지 설치
+    make pyenv          # pyenv 설치/설정
+    make venv           # Python 가상환경 생성/활성화
     ```
 
 ---
