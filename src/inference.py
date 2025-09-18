@@ -26,7 +26,7 @@ def inference(model, tokenized_sent, device):
         output_pred.append(result)
     return (np.concatenate(output_pred).tolist(),)
 
-def infer_and_eval(model_name,model_dir):
+def infer_and_eval(model_name,model_dir,dataset_name="onestone11/nikl-hate-speech"):
     """학습된 모델로 추론(infer)한 후에 예측한 결과(pred)를 평가(eval)"""
     # set device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -36,7 +36,14 @@ def infer_and_eval(model_name,model_dir):
     model.to(device)
 
     # set data
-    _,_, hate_test_dataset, test_dataset = prepare_dataset("./NIKL_AU_2023_COMPETITION_v1.0",tokenizer,256)
+    # _,_, hate_test_dataset, test_dataset = prepare_dataset("./NIKL_AU_2023_COMPETITION_v1.0",tokenizer,256)
+
+    # Huggingface로 데이터셋 가져오는 방법으로 set data
+    _, _, hate_test_dataset, test_dataset = prepare_dataset(
+        dataset_name,  # ← "./NIKL_AU_2023_COMPETITION_v1.0" 에서 이것으로 변경
+        tokenizer,
+        256
+    )
 
     # predict answer
     pred_answer = inference(model, hate_test_dataset, device)  # model에서 class 추론
