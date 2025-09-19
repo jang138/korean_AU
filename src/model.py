@@ -124,7 +124,7 @@ def train(args):
     
     # HuggingFace 사용으로 prepare_dataset의 args.dataset_dir -> args.dataset_name
     hate_train_dataset, hate_valid_dataset, hate_test_dataset, test_dataset = (
-        prepare_dataset(args.dataset_name, tokenizer, args.max_len)  # 변경됨
+        prepare_dataset(args.dataset_name, tokenizer, args.max_len)
     )
 
     # set trainer
