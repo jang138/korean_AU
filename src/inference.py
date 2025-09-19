@@ -8,6 +8,7 @@ from tqdm import tqdm
 from model import load_model_for_inference
 from data import prepare_dataset
 
+
 def inference(model, tokenized_sent, device):
     """학습된(trained) 모델을 통해 결과를 추론하는 function"""
     dataloader = DataLoader(tokenized_sent, batch_size=32, shuffle=False)
@@ -26,13 +27,14 @@ def inference(model, tokenized_sent, device):
         output_pred.append(result)
     return (np.concatenate(output_pred).tolist(),)
 
-def infer_and_eval(model_name,model_dir,dataset_name="onestone11/nikl-hate-speech"):
+
+def infer_and_eval(model_name, model_dir, dataset_name="onestone11/nikl-hate-speech"):
     """학습된 모델로 추론(infer)한 후에 예측한 결과(pred)를 평가(eval)"""
     # set device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # set model & tokenizer
-    tokenizer, model = load_model_for_inference(model_name,model_dir)
+    tokenizer, model = load_model_for_inference(model_name, model_dir)
     model.to(device)
 
     # set data
@@ -42,7 +44,7 @@ def infer_and_eval(model_name,model_dir,dataset_name="onestone11/nikl-hate-speec
     _, _, hate_test_dataset, test_dataset = prepare_dataset(
         dataset_name,  # ← "./NIKL_AU_2023_COMPETITION_v1.0" 에서 이것으로 변경
         tokenizer,
-        256
+        256,
     )
 
     # predict answer
@@ -63,15 +65,18 @@ def infer_and_eval(model_name,model_dir,dataset_name="onestone11/nikl-hate-speec
     result_path = "./prediction/"
     if not os.path.exists(result_path):
         os.makedirs(result_path)
-    output.to_csv(
-        os.path.join(result_path,"result.csv"), index=False
-    )
+    output.to_csv(os.path.join(result_path, "result.csv"), index=False)
     print("--- Save result ---")
+
+    output_path = os.path.join(result_path, "result_v2.jsonl")
+    output.to_json(output_path, orient="records", lines=True, force_ascii=False)
+    print("--- Save result as JSONL ---")
+
     return output
+
 
 if __name__ == "__main__":
     model_name = "klue/bert-base"
     model_dir = "./best_model"
 
-    infer_and_eval(model_name,model_dir)
-    
+    infer_and_eval(model_name, model_dir)
