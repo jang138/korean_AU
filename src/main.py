@@ -21,7 +21,7 @@ def parse_args():
         help='모델 타입 (예: "bert", "electra")',
     )
     parser.add_argument(
-        "--",
+        "--model_name",
         type=str,
         default="klue/bert-base",
         help='모델 이름 (예: "klue/bert-base", "monologg/koelectra-base-finetuned-nsmc")',
