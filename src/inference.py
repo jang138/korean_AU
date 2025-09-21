@@ -45,6 +45,7 @@ def infer_and_eval(model_name, model_dir, dataset_name="onestone11/nikl-hate-spe
         dataset_name,  # ← "./NIKL_AU_2023_COMPETITION_v1.0" 에서 이것으로 변경
         tokenizer,
         256,
+        "v1.0",
     )
 
     # predict answer

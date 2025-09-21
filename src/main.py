@@ -21,7 +21,7 @@ def parse_args():
         help='모델 타입 (예: "bert", "electra")',
     )
     parser.add_argument(
-        "--model_name",
+        "--",
         type=str,
         default="klue/bert-base",
         help='모델 이름 (예: "klue/bert-base", "monologg/koelectra-base-finetuned-nsmc")',
@@ -73,12 +73,16 @@ def parse_args():
         default="bert-test",
         help="wandb 에 기록되는 run name",
     )
-    
+
     parser.add_argument(
         "--dataset_name",
         type=str,
         default="onestone11/nikl-hate-speech",
         help="HuggingFace 데이터셋 이름",
+    )
+
+    parser.add_argument(
+        "--dataset_revision", type=str, default="v1.0", help="데이터셋 버전/브랜치"
     )
 
     args = parser.parse_args()
@@ -91,7 +95,7 @@ if __name__ == "__main__":
     wandb.init(project="project2_test1", name=args.run_name)  # 프로젝트 이름 설정
     train(args)
 
-# .sh 
+# .sh
 # python main.py --run_name "ssac-bert" --lr 5e-4
 # python main.py --run_name "ssac-bert" --lr 5e-3
 # python main.py --model_name klue/roberta-large

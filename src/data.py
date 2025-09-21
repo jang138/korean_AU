@@ -28,25 +28,27 @@ class hate_dataset(torch.utils.data.Dataset):
 #     print(dataset.head())
 #     return dataset
 
-def load_data(dataset_name, split):
+
+def load_data(dataset_name, split, revision):
     """HuggingFace에서 데이터셋 로드 → pandas DataFrame 반환"""
     from datasets import load_dataset
-    
+
     try:
         # HF Dataset 로드
-        hf_dataset = load_dataset(dataset_name, split=split)
-        
+        hf_dataset = load_dataset(dataset_name, split=split, revision=revision)
+
         # pandas DataFrame으로 변환
         dataset = hf_dataset.to_pandas()
-        
+
         print(f"dataframe 의 형태 ({split})")
         print("-" * 100)
         print(dataset.head())
         return dataset
-        
+
     except Exception as e:
         print(f"데이터 로드 에러: {e}")
         return None
+
 
 def construct_tokenized_dataset(dataset, tokenizer, max_length):
     """입력값(input)에 대하여 토크나이징"""
@@ -68,18 +70,18 @@ def construct_tokenized_dataset(dataset, tokenizer, max_length):
     return tokenized_senetences
 
 
-def prepare_dataset(dataset_name, tokenizer, max_len):
+def prepare_dataset(dataset_name, tokenizer, max_len, revision):
     """학습(train)과 평가(test)를 위한 데이터셋을 준비"""
     # load_data
-    # train_dataset = load_data(os.path.join(dataset_dir, "train.csv")) 
+    # train_dataset = load_data(os.path.join(dataset_dir, "train.csv"))
     # valid_dataset = load_data(os.path.join(dataset_dir, "dev.csv"))
     # test_dataset = load_data(os.path.join(dataset_dir, "test.csv"))
     # print("--- data loading Done ---")
-    
+
     # HuggingFace에서 데이터 로드
-    train_dataset = load_data(dataset_name, "train")
-    valid_dataset = load_data(dataset_name, "validation") 
-    test_dataset = load_data(dataset_name, "test")
+    train_dataset = load_data(dataset_name, "train", revision)
+    valid_dataset = load_data(dataset_name, "validation", revision)
+    test_dataset = load_data(dataset_name, "test", revision)
     print("--- data loading Done ---")
 
     # split label
