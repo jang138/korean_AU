@@ -74,6 +74,17 @@ def parse_args():
         help="wandb 에 기록되는 run name",
     )
 
+    parser.add_argument(
+        "--dataset_name",
+        type=str,
+        default="onestone11/nikl-hate-speech",
+        help="HuggingFace 데이터셋 이름",
+    )
+
+    parser.add_argument(
+        "--dataset_revision", type=str, default="v1.0", help="데이터셋 버전/브랜치"
+    )
+
     args = parser.parse_args()
     return args
 
@@ -81,10 +92,10 @@ def parse_args():
 if __name__ == "__main__":
     os.environ["TOKENIZERS_PARALLELISM"] = "false"  # tokenizer 사용 시 warning 방지
     args = parse_args()
-    wandb.init(project="ssac", name=args.run_name)  # 프로젝트 이름 설정
+    wandb.init(project="project2_test1", name=args.run_name)  # 프로젝트 이름 설정
     train(args)
 
-# .sh 
+# .sh
 # python main.py --run_name "ssac-bert" --lr 5e-4
 # python main.py --run_name "ssac-bert" --lr 5e-3
 # python main.py --model_name klue/roberta-large

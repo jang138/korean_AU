@@ -30,8 +30,9 @@ def load_tokenizer_and_model_for_train(args):
     print("--- Modeling Done ---")
     return tokenizer, model
 
-def load_model_for_inference(model_name,model_dir):
-    """추론(infer)에 필요한 모델과 토크나이저 load """
+
+def load_model_for_inference(model_name, model_dir):
+    """추론(infer)에 필요한 모델과 토크나이저 load"""
     # load tokenizer
     Tokenizer_NAME = model_name
     tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
@@ -117,8 +118,15 @@ def train(args):
     model.to(device)
 
     # set data
+    # hate_train_dataset, hate_valid_dataset, hate_test_dataset, test_dataset = (
+    #     prepare_dataset(args.dataset_dir, tokenizer, args.max_len)
+    # )
+
+    # HuggingFace 사용으로 prepare_dataset의 args.dataset_dir -> args.dataset_name
     hate_train_dataset, hate_valid_dataset, hate_test_dataset, test_dataset = (
-        prepare_dataset(args.dataset_dir, tokenizer, args.max_len)
+        prepare_dataset(
+            args.dataset_name, tokenizer, args.max_len, args.dataset_revision
+        )
     )
 
     # set trainer
